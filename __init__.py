@@ -25,6 +25,7 @@ Para instalar librerias se debe ingresar por terminal a la carpeta "libs"
 """
 import os
 import sys
+import traceback
 
 base_path = tmp_global_obj["basepath"]
 cur_path = base_path + 'modules' + os.sep + 'QRReadCreate' + os.sep + 'libs' + os.sep
@@ -67,7 +68,7 @@ def read_bar_code(filename):
     
     return text
 
-def read_pdf417(path, data=None):
+def read_pdf417(path, codif):
     
     # from PIL import Image as PIL
     # from pdf417decoder import PDF417Decoder
@@ -84,13 +85,17 @@ def read_pdf417(path, data=None):
     from zxing import BarCodeReader
     
     reader = BarCodeReader()
+    if codif:
+        decoded = reader.decode(path,codif=codif)
+    else:
+        decoded = reader.decode(path)
     barcode = {
-        'raw': reader.decode(path).raw,
-        'parsed': reader.decode(path).parsed,
-        'path': reader.decode(path).path,
-        'format': reader.decode(path).format,
-        'type': reader.decode(path).type,
-        'point': reader.decode(path).points
+        'raw': decoded.raw,
+        'parsed': decoded.parsed,
+        'path': decoded.path,
+        'format': decoded.format,
+        'type': decoded.type,
+        'point': decoded.points
         }
     
     return barcode
@@ -144,11 +149,12 @@ if module == "readBarcode":
 if module == "read_pdf417":
     path = GetParams("path")
     result = GetParams("result")
-    data = GetParams("data")
+    codif = GetParams("codif")
         
     try:
-        info = read_pdf417(path)
+        info = read_pdf417(path, codif)
     except Exception as e:
+        traceback.print_exc()
         PrintException()
         raise e
 

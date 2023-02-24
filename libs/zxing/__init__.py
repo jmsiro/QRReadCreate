@@ -49,8 +49,9 @@ class BarCodeReader(object):
                     self.zxing_version = line.split(b' ', 1)[1].strip().decode()
                     self.zxing_version_info = tuple(int(n) for n in self.zxing_version.split('.'))
                     break
-
-    def decode(self, filenames, try_harder=False, possible_formats=None, pure_barcode=False, products_only=False):
+    
+    # 2023/02/24 I add a new argument: 'codif' that is used in parse method from BarCode class (see line 110). The default value is the one that came with the library.
+    def decode(self, filenames, try_harder=False, possible_formats=None, pure_barcode=False, products_only=False, codif='utf-8'):
         possible_formats = (possible_formats,) if isinstance(possible_formats, str) else possible_formats
 
         if isinstance(filenames, str):
@@ -106,7 +107,8 @@ class BarCodeReader(object):
                 file_results.append(line)
             else:
                 file_results[-1] += line
-        codes = [BarCode.parse(result) for result in file_results]
+        # 2023/02/24 Here I use the parameter passed to codif Argument is used (see line 132)
+        codes = [BarCode.parse(result, codif=codif) for result in file_results]
 
         if one_file:
             return codes[0]
@@ -126,7 +128,8 @@ class CLROutputBlock(Enum):
 
 class BarCode(object):
     @classmethod
-    def parse(cls, zxing_output):
+    # 2023/02/24 I add a new argument: 'codif' to be able to use different codifications to decode the data (see line 162 & 163)
+    def parse(cls, zxing_output, codif):
         block = CLROutputBlock.UNKNOWN
         uri = format = type = None
         raw = parsed = b''
@@ -156,8 +159,8 @@ class BarCode(object):
                 if m:
                     points.append((float(m.group(1)), float(m.group(2))))
 
-        raw = raw[:-1].decode()
-        parsed = parsed[:-1].decode()
+        raw = raw[:-1].decode(codif)
+        parsed = parsed[:-1].decode(codif)
         return cls(uri, format, type, raw, parsed, points)
 
     def __bool__(self):

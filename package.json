@@ -310,6 +310,32 @@
                     {
                         "type": "input",
                         "placeholder": {
+                            "es": "latin-1",
+                            "en": "latin-1",
+                            "pr": "latin-1"
+                        },
+                        "title": {
+                            "es": "Codificación",
+                            "en": "Codification",
+                            "pr": "Codificação"
+                        },
+                        "description": {
+                            "es": "Escriba el formato de codificación de caracteres para decodificar los datos",
+                            "en": "Write the character encoding format to decode the data",
+                            "pr": "Escreva o formato de codificação de caracteres para decodificar os dados"
+                        },
+                        "help": {
+                            "es": "Por defecto es 'utf-8",
+                            "en": "By default it is 'utf-8",
+                            "pr": "Por padrão é 'utf-8"
+                        },
+                        "id": "codif",
+                        "remove_vars": true,
+                        "css": "col-md-12"
+                    },
+                    {
+                        "type": "input",
+                        "placeholder": {
                             "es": "variable",
                             "en": "variable",
                             "pr": "variável"
